@@ -1,0 +1,171 @@
+╔════════════════════════════════════════════════════════════╗
+║     FAT-TREE SDN CONTROLLER V2 - QUICK START GUIDE        ║
+╚════════════════════════════════════════════════════════════╝
+
+📦 REQUIRED FILES (7 files total):
+  1. skrip_topologi_v2.py
+  2. controller_fattree_johnson_v2.py  
+  3. test_fattree_v2.py
+  4. fix_ovs_v2.sh
+  5. diagnose_ovs_v2.sh
+  6. run_complete_test_v2.sh
+  7. README_V2.md (documentation)
+
+════════════════════════════════════════════════════════════
+
+🚀 OPTION 1: AUTOMATED TEST (RECOMMENDED)
+
+sudo ./run_complete_test_v2.sh
+
+That's it! Script akan:
+  ✓ Check semua file
+  ✓ Bersihkan environment
+  ✓ Start controller
+  ✓ Tunggu hingga ready
+  ✓ Jalankan test
+  ✓ Tampilkan hasil
+  ✓ Cleanup otomatis
+
+Total waktu: ~8-10 menit
+
+════════════════════════════════════════════════════════════
+
+🔧 OPTION 2: MANUAL TEST (UNTUK DEBUGGING)
+
+Step 1: Persiapan
+  chmod +x *.sh
+  sudo ./fix_ovs_v2.sh
+
+Step 2: Start Controller (Terminal 1)
+  ryu-manager controller_fattree_johnson_v2.py
+
+  Tunggu hingga melihat:
+  >>> [READY] ✓ Network ready for traffic!
+
+Step 3: Run Test (Terminal 2)
+  sudo python3 test_fattree_v2.py
+
+════════════════════════════════════════════════════════════
+
+📊 EXPECTED OUTPUT:
+
+Controller (Terminal 1):
+  Johnson Fat-Tree Controller V2 - Ultra-Stable
+  >>> [CONNECT] Switch 0000000000000001 connected
+  >>> [CONNECT] Switch 0000000000000002 connected
+  ... (total 20 switches)
+  >>> [STATS] Switches: 20, Links: 48, Hosts: 0, Status: STABILIZING (1/3)
+  >>> [STATS] Switches: 20, Links: 48, Hosts: 0, Status: STABILIZING (2/3)
+  >>> [STATS] Switches: 20, Links: 48, Hosts: 0, Status: STABILIZING (3/3)
+  >>> [COMPUTE] Topology stable! Computing routes...
+  >>> [MST] Done: 19 edges in 0.05s
+  >>> [JOHNSON] Done: 380 routes in 2.34s
+  >>> [READY] ✓ Network ready for traffic!
+
+Test (Terminal 2):
+  FAT-TREE TEST V2: JOHNSON_FATTREE_V2 (K=4)
+  *** Starting Mininet
+  *** [CONFIG] Configuring switches...
+  *** [WAIT] Allowing 180s for controller...
+  *** [SUCCESS] Network converged in XX.XX seconds
+  *** [RESULT] Throughput: XX.XX Mbits/sec
+  
+  FINAL REPORT:
+  Scale (K)           : 4
+  Number of Hosts     : 16
+  Number of Switches  : 20
+  Convergence Time    : XX.XX s
+  Throughput          : XX.XX Mbits/sec
+  Recovery Time       : XX.XX s
+
+════════════════════════════════════════════════════════════
+
+❌ TROUBLESHOOTING:
+
+Problem: "Multiple connections from..."
+Solution: 
+  sudo ./fix_ovs_v2.sh
+  (Then restart from Step 2)
+
+Problem: "Timeout Convergence > 300 seconds"
+Solution:
+  1. Check controller log for "READY" message
+  2. Pastikan 20 switches connected
+  3. Tunggu lebih lama (edit test_fattree_v2.py, ubah initial_wait ke 300)
+
+Problem: "Only 8 switches detected"
+Solution:
+  Topology script issue, pastikan menggunakan skrip_topologi_v2.py
+
+Problem: Controller crash
+Solution:
+  1. Check: cat /tmp/controller_v2.log
+  2. Install dependencies: pip install networkx eventlet
+  3. Check Ryu version: ryu-manager --version
+
+════════════════════════════════════════════════════════════
+
+🔍 VERIFY BEFORE TESTING:
+
+1. Check files:
+   ls -l *_v2.*
+
+2. Check OVS:
+   ./diagnose_ovs_v2.sh
+
+3. Test topology creation only:
+   python3 -c "from skrip_topologi_v2 import SkripsiTopo; SkripsiTopo('fattree', k=4)"
+   
+   Should output:
+   *** Fat-Tree Parameters:
+       K = 4
+       Total Switches = 20
+       Hosts = 16
+
+════════════════════════════════════════════════════════════
+
+📈 PERFORMANCE TARGETS (K=4):
+
+  ✓ Convergence Time: < 180 seconds (target: 120s)
+  ✓ Throughput: 5-10 Mbits/sec (depends on hardware)
+  ✓ Recovery Time: < 60 seconds (target: 30-40s)
+  ✓ Path Computation: < 5 seconds for Johnson algorithm
+
+════════════════════════════════════════════════════════════
+
+💾 LOG FILES:
+
+If using automated script:
+  /tmp/controller_v2.log - Controller output
+  /tmp/test_v2.log       - Test output
+  /tmp/fix_ovs.log       - Cleanup log
+
+View results:
+  grep -A 10 'FINAL REPORT' /tmp/test_v2.log
+  grep 'READY\|STATS' /tmp/controller_v2.log
+
+════════════════════════════════════════════════════════════
+
+🎯 KEY DIFFERENCES FROM OLD VERSION:
+
+✅ FIXED: Topology now creates exactly 20 switches (was 8)
+✅ FIXED: No more "Multiple connections" issue
+✅ FIXED: Proper stability checking (3x30s = 90s)
+✅ FIXED: Connection tracking prevents duplicates
+✅ NEW: Automated test script with full error checking
+✅ NEW: Progress indicators during wait time
+✅ NEW: Comprehensive logging and reporting
+
+════════════════════════════════════════════════════════════
+
+📞 NEED HELP?
+
+1. Read README_V2.md for detailed documentation
+2. Run diagnostic: ./diagnose_ovs_v2.sh
+3. Check logs in /tmp/
+4. Verify topology: Python import test
+5. Test simple topology first before Fat-Tree
+
+════════════════════════════════════════════════════════════
+
+Good luck! 🚀

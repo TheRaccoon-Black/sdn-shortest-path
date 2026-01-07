@@ -1,0 +1,227 @@
+╔════════════════════════════════════════════════════════════╗
+║          FAT-TREE SDN V2 - TESTING CHECKLIST              ║
+╚════════════════════════════════════════════════════════════╝
+
+Gunakan checklist ini untuk memastikan testing berjalan sukses!
+
+════════════════════════════════════════════════════════════
+PHASE 1: PRE-TEST VERIFICATION
+════════════════════════════════════════════════════════════
+
+[ ] Step 1: Verify all files exist
+    Command: ls -l *_v2.*
+    Expected: 6 files dengan _v2 suffix
+
+[ ] Step 2: Make scripts executable  
+    Command: chmod +x *.sh
+    
+[ ] Step 3: Check Python dependencies
+    Commands:
+      python3 -c "import ryu; print('Ryu OK')"
+      python3 -c "import networkx; print('NetworkX OK')"
+      python3 -c "import eventlet; print('Eventlet OK')"
+    
+[ ] Step 4: Test topology import
+    Command: python3 -c "from skrip_topologi_v2 import SkripsiTopo; print('OK')"
+    Expected: "OK" (no errors)
+    
+[ ] Step 5: Run diagnostic
+    Command: ./diagnose_ovs_v2.sh
+    Expected: "System is CLEAN" or "needs cleaning"
+
+════════════════════════════════════════════════════════════
+PHASE 2: ENVIRONMENT PREPARATION
+════════════════════════════════════════════════════════════
+
+[ ] Step 6: Clean environment
+    Command: sudo ./fix_ovs_v2.sh
+    Expected: All steps show "✓ Done"
+    
+[ ] Step 7: Verify clean state
+    Command: ./diagnose_ovs_v2.sh
+    Check:
+      [ ] No controllers running
+      [ ] No OVS bridges
+      [ ] No connections on port 6653
+      [ ] OVS service is Active
+
+════════════════════════════════════════════════════════════
+PHASE 3: AUTOMATED TEST (RECOMMENDED)
+════════════════════════════════════════════════════════════
+
+[ ] Step 8: Run automated test
+    Command: sudo ./run_complete_test_v2.sh
+    
+    Monitor output untuk:
+    [ ] All files checked (✓)
+    [ ] Environment cleaned (✓)
+    [ ] Controller started
+    [ ] Switches connecting (should see 20)
+    [ ] Stability counter reaching 3/3
+    [ ] "Network ready for traffic!" message
+    [ ] Test running
+    [ ] Results displayed
+    
+Expected total time: 8-10 minutes
+
+════════════════════════════════════════════════════════════
+PHASE 4: MANUAL TEST (IF AUTOMATED FAILS)
+════════════════════════════════════════════════════════════
+
+[ ] Step 9a: Terminal 1 - Start controller
+    Command: ryu-manager controller_fattree_johnson_v2.py
+    
+    Wait for and verify:
+    [ ] "Johnson Fat-Tree Controller V2" header
+    [ ] ">>> [CONNECT] Switch ..." (repeat 20x)
+    [ ] ">>> [STATS] Switches: 20, Links: 48"
+    [ ] ">>> [STAB] ... (1/3)" → "(2/3)" → "(3/3)"
+    [ ] ">>> [COMPUTE] Topology stable!"
+    [ ] ">>> [MST] Done: 19 edges"
+    [ ] ">>> [JOHNSON] Done: XXX routes"
+    [ ] ">>> [READY] ✓ Network ready for traffic!"
+    
+    Time to ready: ~2-3 minutes
+
+[ ] Step 9b: Terminal 2 - Run test
+    Command: sudo python3 test_fattree_v2.py
+    
+    Monitor for:
+    [ ] Mininet starts (20 switches, 16 hosts)
+    [ ] Config completes
+    [ ] 180s wait starts (with progress updates)
+    [ ] Convergence test starts
+    [ ] Ping succeeds
+    [ ] Throughput test runs
+    [ ] Recovery test runs
+    [ ] Final report displays
+
+════════════════════════════════════════════════════════════
+PHASE 5: RESULT VERIFICATION
+════════════════════════════════════════════════════════════
+
+Check Final Report contains:
+
+[ ] Scale (K): 4
+[ ] Number of Hosts: 16
+[ ] Number of Switches: 20
+[ ] Convergence Time: < 180 seconds (PASS) or TIMEOUT (FAIL)
+[ ] Throughput: Shows "Mbits/sec" (PASS) or "Skipped" (FAIL)
+[ ] Recovery Time: < 60 seconds (PASS) or "> 60s" (FAIL)
+
+Acceptance Criteria:
+[ ] Convergence Time is NOT "TIMEOUT"
+[ ] Throughput is NOT "Skipped"
+[ ] No "Multiple connections" warnings in controller log
+
+════════════════════════════════════════════════════════════
+PHASE 6: POST-TEST ANALYSIS
+════════════════════════════════════════════════════════════
+
+[ ] Step 10: Review controller logs
+    If using automated: cat /tmp/controller_v2.log
+    
+    Look for:
+    [ ] No "DUPLICATE" warnings
+    [ ] No "DISCONNECT" after initial connect
+    [ ] No "ERROR" messages
+    [ ] Proper progression: CONNECT → STATS → STAB → COMPUTE → READY
+
+[ ] Step 11: Review test logs  
+    If using automated: cat /tmp/test_v2.log
+    
+    Verify:
+    [ ] All 20 switches started
+    [ ] All 16 hosts configured
+    [ ] Config completed without errors
+    [ ] Progress updates showed up
+    [ ] Final report is complete
+
+[ ] Step 12: Extract metrics
+    Commands:
+      grep "Convergence Time" /tmp/test_v2.log
+      grep "Throughput" /tmp/test_v2.log
+      grep "Recovery Time" /tmp/test_v2.log
+
+════════════════════════════════════════════════════════════
+COMMON ISSUES & SOLUTIONS
+════════════════════════════════════════════════════════════
+
+ISSUE: "Multiple connections from..."
+☑ Solution: sudo ./fix_ovs_v2.sh → restart controller
+
+ISSUE: Only 8 switches appear
+☑ Solution: Verify using skrip_topologi_v2.py (not old version)
+
+ISSUE: Convergence timeout
+☑ Solution: 
+  - Check controller reached "READY" state
+  - Increase wait time in test_fattree_v2.py (line 133)
+  - Verify all 20 switches connected
+
+ISSUE: Controller crashes
+☑ Solution:
+  - Check dependencies: pip install networkx eventlet
+  - Verify Python 3.x
+  - Check logs for specific error
+
+ISSUE: Test hangs at "Waiting for controller"
+☑ Solution:
+  - Controller may not be running
+  - Check port 6653: sudo netstat -antp | grep 6653
+  - Restart controller
+
+════════════════════════════════════════════════════════════
+SUCCESS CRITERIA SUMMARY
+════════════════════════════════════════════════════════════
+
+✓ TOPOLOGY:
+  [x] 20 switches created (4 core + 8 aggr + 8 edge)
+  [x] 16 hosts created
+  [x] 48 links established
+
+✓ CONTROLLER:
+  [x] All switches connect successfully
+  [x] No "Multiple connections" warnings
+  [x] Topology stabilizes (3/3)
+  [x] Routes computed successfully
+  [x] Reaches "READY" state
+
+✓ TESTING:
+  [x] Convergence time < 180s
+  [x] Throughput measured successfully
+  [x] Recovery time < 60s
+  [x] No timeouts or errors
+
+════════════════════════════════════════════════════════════
+FINAL SIGN-OFF
+════════════════════════════════════════════════════════════
+
+Test Date: _______________
+Tester: _______________
+
+Results:
+[ ] PASS - All criteria met
+[ ] PARTIAL - Some issues but functional
+[ ] FAIL - Critical issues
+
+Notes:
+_______________________________________________________
+_______________________________________________________
+_______________________________________________________
+
+Controller Log: /tmp/controller_v2.log
+Test Log: /tmp/test_v2.log
+
+════════════════════════════════════════════════════════════
+
+Jika semua checklist di atas PASS, maka implementasi V2 
+berhasil dan siap untuk testing skala lebih besar!
+
+Next Steps:
+  - Test dengan K=6
+  - Test dengan K=8  
+  - Bandingkan dengan algoritma lain (Dijkstra, Bellman-Ford)
+  - Dokumentasi hasil untuk skripsi
+
+════════════════════════════════════════════════════════════

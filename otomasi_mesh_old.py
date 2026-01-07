@@ -7,27 +7,11 @@ from mininet.link import TCLink
 from mininet.log import setLogLevel, info
 from skrip_topologi import SkripsiTopo 
 
-def set_ovs_protocol_and_timeout(net, timeout=180):
-    """
-    Fungsi krusial untuk mencegah 'Multiple connections' error.
-    Memaksa semua switch untuk memiliki waktu tunggu (inactivity_probe) yang lama
-    sehingga tidak memutus koneksi saat Controller sibuk.
-    """
-    info("*** [FIX] Mengatur Inactivity Probe ke {} detik untuk mencegah disconnect...\n".format(timeout))
-    for sw in net.switches:
-        # Set protokol ke OpenFlow 1.3
-        sw.cmd('ovs-vsctl set Bridge {} protocols=OpenFlow13'.format(sw.name))
-        # Set inactivity_probe ke controller (default biasanya 5-15 detik, kita ubah jadi 180)
-        # Ini mencegah switch 'ngambek' dan reconnect terus menerus.
-        sw.cmd('ovs-vsctl set-controller {} tcp:127.0.0.1:6653'.format(sw.name))
-        sw.cmd('ovs-vsctl set controller {} inactivity_probe={}'.format(sw.name, timeout * 1000))
-
 def measure_convergence(net, target_host_1, target_host_2, timeout=180):
     info(f"*** [TEST] Mengukur Convergence Time antara {target_host_1.name} dan {target_host_2.name}...\n")
     info(f"*** [INFO] Menunggu maksimal {timeout} detik agar jaringan stabil...\n")
     start_time = time.time()
     while True:
-        # Kirim 1 ping
         result = target_host_1.cmd(f'ping -c 1 -W 1 {target_host_2.IP()}')
         if "1 received" in result:
             end_time = time.time()
@@ -84,24 +68,21 @@ def run_automated_test(topo_type, nodes_or_k, algo_name="TEST"):
     else:
         topo = SkripsiTopo(topo_type=topo_type, nodes=nodes_or_k)
 
-    # Kita gunakan RemoteController default, konfigurasi detail dilakukan di set_ovs_protocol_and_timeout
-    net = Mininet(topo=topo, controller=None, switch=OVSKernelSwitch, link=TCLink)
+    switch_class = partial(OVSKernelSwitch, protocols='OpenFlow13')
+    net = Mininet(topo=topo, controller=None, switch=switch_class, link=TCLink)
     net.addController('c0', controller=RemoteController, ip='127.0.0.1', port=6653)
     
     net.start()
     
-    # --- FIX CRITICAL: ATUR TIMEOUT SWITCH ---
-    set_ovs_protocol_and_timeout(net, timeout=180)
-    
-    # WAKTU TUNGGU UNTUK MESH 
+    # WAKTU TUNGGU UNTUK MESH (Harus lebih lama karena link sangat banyak)
     initial_wait = 10
     if nodes_or_k >= 10: initial_wait = 20
-    if nodes_or_k >= 50: initial_wait = 600 # 10 Menit untuk 50 Mesh
-    if nodes_or_k >= 100: initial_wait = 3600 # 1 Jam untuk 100 Mesh
     
-    # Khusus Mesh, berikan log peringatan
-    if topo_type == 'mesh' and nodes_or_k >= 50:
-        info("*** WARNING: Mesh Scale Besar terdeteksi. Jangan close terminal jika terlihat hang.\n")
+    # UPDATE EKSTREM: Memberikan waktu 20 Menit untuk 50 Node Mesh
+    if nodes_or_k >= 50: initial_wait = 2000 # 20 Menit
+    
+    # UPDATE EKSTREM: Memberikan waktu 1 Jam untuk 100 Node Mesh
+    if nodes_or_k >= 100: initial_wait = 3600 # 60 Menit
         
     info(f"*** Menunggu {initial_wait} detik agar Controller memetakan topologi...\n")
     time.sleep(initial_wait)
@@ -119,9 +100,9 @@ def run_automated_test(topo_type, nodes_or_k, algo_name="TEST"):
         s_fail_1 = 's1'
         s_fail_2 = 's2'
 
-    # Timeout ping disesuaikan
+    # UPDATE: Timeout ping juga harus disesuaikan
     ping_timeout = 180
-    if nodes_or_k >= 50: ping_timeout = 600
+    if nodes_or_k >= 50: ping_timeout = 1200
     if nodes_or_k >= 100: ping_timeout = 1200
 
     conv_time = measure_convergence(net, h_start, h_end, timeout=ping_timeout)
@@ -145,9 +126,10 @@ def run_automated_test(topo_type, nodes_or_k, algo_name="TEST"):
 if __name__ == '__main__':
     setLogLevel('info')
     
-    # --- PILIH SKENARIO ---
-    # Topologi: 'mesh', 'ring', 'tree'
+    # --- PILIH SKENARIO MESH ---
+    # Topologi: 'mesh'
     # Nodes: 10, 50, 100
     
-    # run_automated_test('ring', 100, algo_name="JOHNSON")
-    run_automated_test('mesh', 10, algo_name="BELLMAN_MESH")
+    run_automated_test('mesh', 20, algo_name="BELLMAN/JOHNSON")
+    #run_automated_test('mesh', 50, algo_name="BELLMAN/JOHNSON")
+    # run_automated_test('mesh', 100, algo_name="BELLMAN/JOHNSON")
