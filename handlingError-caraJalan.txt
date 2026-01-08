@@ -1,0 +1,55 @@
+seperti biasa masuk ke folder terus buka 2 terminal dengan folder yang sama
+install python 10 dulu biar compitible:
+sudo apt install software-properties-common -y
+sudo add-apt-repository ppa:deadsnakes/ppa -y
+sudo apt update
+sudo apt install python3.10 python3.10-venv python3.10-dev build-essential -y
+
+(janlup bikin/aktifkan venv pakai yang python 10: python3.10 -m venv venv)
+
+masuk venv kayak biasa: source venv/bin/activate
+
+-------------------------------------------------------------------------------
+install ryu pakai ini soalnya agak trikcy
+
+pip install --upgrade pip
+pip install "setuptools<59" "wheel==0.37.1"
+pip install --no-build-isolation ryu==4.34 eventlet==0.30.2 networkx==2.5 ovs==2.17.9 mininet
+
+
+-------------------------------------------------------------------------------
+kalo ada error karena masalah metadata install PBR dulu kayak ini:
+pip install pbr
+baru install lagi pakai ini:
+pip install --no-build-isolation ryu==4.34 eventlet==0.33.3 networkx==2.5 ovs==2.17.9 mininet
+
+--------------------------------------------------------------------------------------------
+kalo masih ada masalah kayak evenlet WSGI yang gak compitible lagi, ganti code di file wsgi.py di ~/sdn/venv/lib/python3.10/site-packages/ryu/app/wsgi.py
+
+bagian :
+from eventlet.wsgi import ALREADY_HANDLED
+jadi ini:
+import eventlet.wsgi
+try:
+    ALREADY_HANDLED = eventlet.wsgi.ALREADY_HANDLED
+except AttributeError:
+    ALREADY_HANDLED = object()
+    
+    
+    
+itu untuk handling error kalo requirementnya gak bisa diinstall langsung
+
+
+ini untuk jalanin:
+buka terminal satu di venvnya terus jalanin ini(ini yang ring):
+ryu-manager controller_johnson_ring.py --ofp-tcp-listen-port 6653 --observe-links
+
+diterminal 2 jalalnin ini:
+sudo python3 otomasi_skripsi.py
+
+note: ngatur jumlah nodenya di dalam otomasi skripsi paling bawah(ubah aja)
+note-2: ganti controller_bellman_ring_final kalo mau pakai alg bellman. file otomasinya tetap sama
+
+untuk mesh sama kayak yang di atas tapi file otomasinya pakai yang otomasi_mesh_final.py sama controller_johnson_mesh_final.py. Ngatur nodenya juga sama di file otomasi_mesh_finel.py kayak sebelumnya.
+
+note: kalo habis jalanin jan lupa di hapus cache pakai sudo mn -c

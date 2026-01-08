@@ -1,0 +1,172 @@
+loading app /home/ojik/Documents/habibti/controller_bellman_fattree_fixed.py
+loading app ryu.controller.ofp_handler
+instantiating app /home/ojik/Documents/habibti/controller_bellman_fattree_fixed.py of BellmanFatTreeController
+============================================================
+Bellman-Ford Fat-Tree Controller (Pure LLDP Mode)
+============================================================
+instantiating app ryu.controller.ofp_handler of OFPHandler
+>>> Topology Updater Started
+>>> Path Pre-compute Worker Started
+>>> LLDP Sender Started
+Switch 0000000000000003 features installed
+Switch 0000000000000003 features installed
+Switch 0000000000000003 features installed
+Switch 0000000000000003 connected
+Switch 0000000000000002 features installed
+Switch 0000000000000002 connected
+Switch 0000000000000003 disconnected
+Switch 0000000000000003 features installed
+Switch 0000000000000003 connected
+Switch 0000000000000003 disconnected
+Switch 0000000000000003 features installed
+Switch 0000000000000003 connected
+Switch 0000000000000001 features installed
+Switch 0000000000000001 connected
+Switch 0000000000000003 disconnected
+>>> Topology Updated: 3 switches, 1 links [PARTIAL]
+>>> Topology Updated: 5 switches, 10 links [READY]
+>>> Pre-computed 6 paths
+>>> Pre-computed 6 paths
+>>> Pre-computed 6 paths
+>>> Pre-computed 6 paths
+>>> Pre-computed 6 paths
+>>> Pre-computed 6 paths
+>>> Pre-computed 6 paths
+>>> Pre-computed 6 paths
+>>> Pre-computed 6 paths
+>>> Pre-computed 6 paths
+>>> Pre-computed 6 paths
+>>> Pre-computed 6 paths
+>>> Pre-computed 6 paths
+>>> Pre-computed 6 paths
+Switch 0000000000000001 disconnected
+Switch 0000000000000002 disconnected
+>>> Topology Updated: 3 switches, 3 links [PARTIAL]
+Switch 0000000000000001 features installed
+Switch 0000000000000002 features installed
+Switch 000066e3e5ee6d45 features installed
+Switch 0000000000000003 features installed
+Switch 0000000000000001 connected
+Switch 000066e3e5ee6d45 connected
+Switch 0000000000000002 connected
+Switch 0000000000000003 connected
+Switch 00002a12551ad146 features installed
+Switch 00002a12551ad146 connected
+Switch 0000000000000001 disconnected
+Switch 0000000000000002 disconnected
+Switch 0000000000000003 features installed
+Switch 0000000000000001 features installed
+Switch 0000000000000001 connected
+Switch 0000000000000004 features installed
+Switch 0000000000000004 connected
+Switch 000066e3e5ee6d45 disconnected
+Switch 000066e3e5ee6d45 features installed
+Switch 000066e3e5ee6d45 connected
+Switch 0000000000000002 features installed
+Switch 0000000000000002 connected
+Switch 0000000000000003 disconnected
+Switch 0000000000000003 features installed
+Switch 0000000000000003 connected
+>>> Topology Updated: 9 switches, 17 links [PARTIAL]
+atures installed
+Switch 00003a82c9a16044 connected
+Switch 0000000000000002 connected
+Switch 0000000000000001 connected
+Switch 0000f67bdcbe1d41 connected
+Switch 000026fc73283244 connected
+Switch 0000f67bdcbe1d41 disconnected
+Switch 000026fc73283244 disconnected
+Switch 000026fc73283244 features installed
+Switch 000026fc73283244 connected
+Switch 0000000000000001 disconnected
+Switch 0000000000000002 disconnected
+Switch 00009a3690fb2846 features installed
+Switch 00009a3690fb2846 connected
+Switch 00003a82c9a16044 disconnected
+Switch 0000000000000002 features installed
+Switch 0000000000000002 connected
+Switch 0000000000000002 features installed
+Switch 0000000000000003 features installed
+Switch 0000000000000003 connected
+>>> Topology Updated: 8 switches, 8 links [PARTIAL]
+>>> Topology Updated: 8 switches, 10 links [PARTIAL]
+Switch 0000000000000002 disconnected
+Switch 00009a3690fb2846 disconnected
+Switch 0000000000000003 disconnected
+Switch 000026fc73283244 disconnected
+>>> Topology Updated: 4 switches, 0 links [PARTIAL]
+Switch 0000000000000003 features installed
+Switch 00007abb7beb1349 features installed
+Switch 00002a12551ad146 features installed
+Switch 0000000000000001 features installed
+Switch 0000000000000002 features installed
+Switch 0000000000000003 connected
+Switch 00007abb7beb1349 connected
+Switch 00002a12551ad146 connected
+Switch 0000000000000001 connected
+Switch 0000000000000002 connected
+Switch 00007abb7beb1349 disconnected
+Switch 00002a12551ad146 disconnected
+Switch 0000000000000001 features installed
+Switch 0000000000000003 disconnected
+Switch 0000000000000003 features installed
+Switch 0000000000000003 connected
+Switch 0000000000000002 disconnected
+Switch 0000000000000001 disconnected
+Switch 0000000000000001 features installed
+Switch 0000000000000001 connected
+Switch 0000000000000002 features installed
+Switch 0000000000000002 connected
+>>> Topology Updated: 10 switches, 0 links [PARTIAL]
+>>> Topology Updated: 10 switches, 6 links [PARTIAL]
+0003 features installed
+Switch 0000000000000004 features installed
+Switch 0000000000000002 connected
+Switch 0000000000000003 connected
+Switch 0000000000000001 connected
+Switch 0000000000000004 connected
+Switch 0000f67bdcbe1d41 features installed
+Switch 0000f67bdcbe1d41 connected
+Switch 0000000000000001 disconnected
+Switch 0000000000000001 features installed
+Switch 0000000000000001 connected
+Switch 0000000000000002 features installed
+Switch 0000000000000003 disconnected
+Switch 0000000000000004 disconnected
+Switch 0000000000000004 features installed
+Switch 0000000000000004 connected
+Switch 0000000000000001 features installed
+Switch 0000000000000002 disconnected
+Switch 0000000000000003 features installed
+Switch 0000000000000003 connected
+>>> Topology Updated: 10 switches, 7 links [PARTIAL]
+>>> Topology Updated: 11 switches, 15 links [PARTIAL]
+Switch 0000f67bdcbe1d41 disconnected
+Switch 0000000000000003 disconnected
+Switch 0000000000000001 disconnected
+Switch 0000000000000004 disconnected
+>>> Topology Updated: 7 switches, 0 links [PARTIAL]
+Switch 0000000000000003 features installed
+Switch 0000000000000003 features installed
+Switch 0000000000000001 features installed
+Switch 0000000000000004 features installed
+Switch 0000000000000002 features installed
+Switch 0000000000000001 features installed
+Switch 0000000000000003 connected
+Switch 0000000000000001 connected
+Switch 0000000000000004 connected
+Switch 0000000000000002 connected
+Switch 00007abb7beb1349 features installed
+Switch 00007abb7beb1349 connected
+>>> Topology Updated: 11 switches, 9 links [PARTIAL]
+Switch 0000000000000001 features installed
+Switch 0000000000000002 features installed
+Switch 0000000000000002 disconnected
+Switch 0000000000000003 disconnected
+Switch 0000000000000001 disconnected
+Switch 0000000000000003 features installed
+Switch 0000000000000003 connected
+Switch 0000000000000004 disconnected
+Switch 0000366086682941 features installed
+Switch 0000366086682941 connected
+>>> Topology Updated: 13 switches, 14 links [PARTIAL]
