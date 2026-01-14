@@ -161,7 +161,7 @@ if __name__ == '__main__':
     
     # === SKENARIO 1: BELLMAN-FORD ===
     # Terminal 1: ryu-manager controller_bellman_fattree.py --ofp-tcp-listen-port 6653 --observe-links
-    run_fattree_test(k=4, algo_name="BELLMAN_FATTREE")
+    run_fattree_test(k=2, algo_name="BELLMAN_FATTREE")
     # run_fattree_test(k=6, algo_name="BELLMAN_FATTREE")
     # run_fattree_test(k=8, algo_name="BELLMAN_FATTREE")
 
