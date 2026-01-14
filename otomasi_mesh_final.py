@@ -5,7 +5,7 @@ from mininet.net import Mininet
 from mininet.node import RemoteController, OVSKernelSwitch
 from mininet.link import TCLink
 from mininet.log import setLogLevel, info
-from skrip_topologi import SkripsiTopo 
+from skrip_topologi import SkripsiTopo
 
 def set_ovs_protocol_and_timeout(net, timeout=600):
     """
@@ -73,55 +73,55 @@ def measure_recovery(net, s_src, s_dst, h_src, h_dst):
 
 def run_mesh_test(nodes_or_k, algo_name="BELLMAN"):
     info(f"\n{'='*40}\nMEMULAI OTOMASI: {algo_name} - MESH ({nodes_or_k} Nodes)\n{'='*40}\n")
-    
+   
     topo = SkripsiTopo(topo_type='mesh', nodes=nodes_or_k)
     net = Mininet(topo=topo, controller=None, switch=OVSKernelSwitch, link=TCLink)
     net.addController('c0', controller=RemoteController, ip='127.0.0.1', port=6653)
-    
+   
     net.start()
-    
+   
     # FIX KRUSIAL: Set Timeout Ekstrem (600 detik)
     set_ovs_protocol_and_timeout(net, timeout=600)
-    
+   
     initial_wait = 15
     if nodes_or_k >= 20: initial_wait = 90
-    
+   
     # UPDATE EKSTREM: 30 Menit untuk 50 Node agar Ryu bisa napas
-    if nodes_or_k >= 50: initial_wait = 1800 
+    if nodes_or_k >= 50: initial_wait = 600
     # UPDATE EKSTREM: 1 Jam untuk 100 Node
     if nodes_or_k >= 100: initial_wait = 3600
-        
+       
     info(f"*** Menunggu {initial_wait} detik agar Controller memetakan topologi...\n")
     time.sleep(initial_wait)
-    
+   
     h_start = net.get('h1')
-    h_end = net.get(f'h{nodes_or_k}') 
+    h_end = net.get(f'h{nodes_or_k}')
     s_fail_1 = 's1'
     s_fail_2 = 's2'
 
     ping_timeout = 180
-    if nodes_or_k >= 50: ping_timeout = 600
+    if nodes_or_k >= 50: ping_timeout = 1400
 
     conv_time = measure_convergence(net, h_start, h_end, timeout=ping_timeout)
-    
+   
     if conv_time is None:
         th_val = "Skipped"
         rec_time = "Skipped"
     else:
         th_val = measure_throughput(net, h_start, h_end)
         rec_time = measure_recovery(net, s_fail_1, s_fail_2, h_start, h_end)
-    
+   
     info(f"\n{'='*40}\nLaporan Akhir {algo_name} - MESH\n{'='*40}\n")
     info(f"Scale           : {nodes_or_k} Nodes\n")
     info(f"Convergence Time: {conv_time if conv_time else '> Timeout'}\n")
     info(f"Throughput      : {th_val}\n")
     info(f"Recovery Time   : {rec_time}\n")
     info(f"{'='*40}\n")
-    
+   
     net.stop()
 
 if __name__ == '__main__':
     setLogLevel('info')
-    
+   
     # Jalankan MESH 50 Node
-    run_mesh_test(10, algo_name="BELLMAN")
+    run_mesh_test(50, algo_name="BELLMAN")
